@@ -15,8 +15,25 @@ model Book {
   id          String   @id @default(uuid())
   title       String
   description String
+  year        Int
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
+  author      Author?  @relation(fields: [author_id], references: [id])
+  author_id   String?
+
 
   @@map(name: "books")
+}
+
+model Author {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  country    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  books      Book[]
+
+
+  @@map(name: "authors")
 }

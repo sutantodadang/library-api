@@ -11,6 +11,7 @@ export class BookRouter extends BaseRoutes {
   }
 
   public setRoute = (): void => {
-    this.router.post("/", this._bookController.NewBook);
+    this.router.post("/", this._bookController.newBook);
+    this.router.get("/", this._bookController.getAllBook);
   };
 }
