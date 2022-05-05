@@ -18,6 +18,10 @@ export interface IBookService {
   save(book: Book): Promise<Book>;
 
   getAll(query: BookFilter): Promise<Pagination<BookFilter, Book>>;
+
+  getById(id: string): Promise<Book | null>;
+
+  update(id: string, data: Book): Promise<Book>;
 }
 
 export class BookService implements IBookService {
@@ -31,6 +35,16 @@ export class BookService implements IBookService {
     if (book.title === null || book.description === null) {
       throw new HttpException("no book data", 400);
     }
+
+    const exist = await this._bookRepo.findbyTitle(book.title);
+
+    console.log(exist);
+
+    if (exist?.id) {
+      throw new HttpException("data already exist", 409);
+    }
+
+    book.year = Number(book.year);
 
     return this._bookRepo.create(book);
   };
@@ -53,5 +67,35 @@ export class BookService implements IBookService {
     };
 
     return paginateResult;
+  };
+
+  getById = async (id: string): Promise<Book | null> => {
+    const result = await this._bookRepo.findById(id);
+
+    if (!result) {
+      throw new HttpException("no data", 400);
+    }
+
+    return result;
+  };
+
+  update = async (id: string, data: Book): Promise<Book> => {
+    if (!id) {
+      throw new HttpException("no id", 400);
+    }
+
+    if (!data) {
+      throw new HttpException("no data to update", 400);
+    }
+
+    const exist = await this._bookRepo.findById(id);
+
+    if (!exist) {
+      throw new HttpException(`no data with id ${id}`, 400);
+    }
+
+    const result = await this._bookRepo.update(id, data);
+
+    return result;
   };
 }

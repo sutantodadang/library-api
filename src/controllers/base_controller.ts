@@ -2,8 +2,8 @@ import { Response } from "express";
 import { APIResponse } from "../models/response";
 
 export class BaseController<T, R> {
-  response = <R>(status?: string, errors?: Error, data?: R) => {
-    let result: APIResponse<R> = {
+  response = <V>(status?: string, errors?: Error, data?: V) => {
+    let result: APIResponse<V> = {
       status,
       errors,
       data,
